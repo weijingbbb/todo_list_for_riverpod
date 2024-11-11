@@ -7,7 +7,11 @@ part 'todo_list_provider.g.dart';
 class TodoList extends _$TodoList {
   @override
   List<Todo> build() {
-    return [];
+    return [
+      const Todo(id: '1', desc: 'AAAAA'),
+      const Todo(id: '2', desc: 'BBBB'),
+      const Todo(id: '3', desc: 'CCCCC'),
+    ];
   }
 
   void addTodo(String desc) {
