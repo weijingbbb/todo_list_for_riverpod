@@ -10,7 +10,7 @@ final initialTodos = [
   {"id": "3", "desc": "Do homework", "completed": false},
 ];
 
-const double kProbabiltyOfError = 0.5;
+const double kProbabiltyOfError = 0.2;
 const int kDelayDuration = 1;
 
 class FakeRepositoryProvider extends TodosRepository {
