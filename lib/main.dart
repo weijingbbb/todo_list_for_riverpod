@@ -11,7 +11,7 @@ void main() {
     ProviderScope(
       overrides: [
         // 这里对请求方法重写，应该是这样可以在请求类里使用ref
-        todoRepositoryProvider.overrideWithValue(FakeRepositoryProvider()),
+        todosRepositoryProvider.overrideWithValue(FakeRepositoryProvider()),
       ],
       child: const MyApp(),
     ),

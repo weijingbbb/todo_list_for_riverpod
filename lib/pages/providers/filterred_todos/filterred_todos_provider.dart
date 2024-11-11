@@ -9,16 +9,18 @@ part 'filterred_todos_provider.g.dart';
 
 @riverpod
 List<Todo> filterredTodos(Ref ref) {
-  final todos = ref.watch(todoListProvider);
+  final todoListState = ref.watch(todoListProvider);
   final filter = ref.watch(todoFilterProvider);
   final search = ref.watch(todoSearchProvider);
 
   List<Todo> tempTodos;
 
   tempTodos = switch (filter) {
-    Filter.active => todos.where((element) => !element.completed).toList(),
-    Filter.completed => todos.where((element) => element.completed).toList(),
-    Filter.all => todos,
+    Filter.active =>
+      todoListState.todos.where((todo) => !todo.completed).toList(),
+    Filter.completed =>
+      todoListState.todos.where((todo) => todo.completed).toList(),
+    Filter.all => todoListState.todos,
     Object() => throw UnimplementedError(),
     null => throw UnimplementedError(),
   };
