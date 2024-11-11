@@ -1,30 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_list_for_riverpod/pages/providers/filterred_todos/filterred_todos_provider.dart';
+import 'package:todo_list_for_riverpod/pages/providers/filtered_todos/filtered_todos_provider.dart';
 import 'package:todo_list_for_riverpod/pages/providers/todo_item/todo_item_provider.dart';
+import 'package:todo_list_for_riverpod/pages/providers/todo_list/todo_list_provider.dart';
+import 'package:todo_list_for_riverpod/pages/providers/todo_list/todo_list_state.dart';
 import 'package:todo_list_for_riverpod/pages/widgets/todo_item.dart';
 
-class ShowTodos extends ConsumerWidget {
+class ShowTodos extends ConsumerStatefulWidget {
   const ShowTodos({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final filteredTodos = ref.watch(filterredTodosProvider);
+  ConsumerState<ShowTodos> createState() => _ShowTodosState();
+}
 
-    return ListView.separated(
-      itemCount: filteredTodos.length,
-      separatorBuilder: (BuildContext context, int index) {
-        return const Divider(color: Colors.grey);
-      },
-      itemBuilder: (context, index) {
-        final todo = filteredTodos[index];
-        return ProviderScope(
-          overrides: [
-            todoItemProvider.overrideWithValue(todo),
-          ],
-          child: const TodoItem(),
+class _ShowTodosState extends ConsumerState<ShowTodos> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      ref.read(todoListProvider.notifier).getTodos();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen<TodoListState>(todoListProvider, (previous, next) {
+      if (next.status == TodoListStatus.failure) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text(
+                '错误',
+                textAlign: TextAlign.center,
+              ),
+              content: Text(
+                next.error,
+                textAlign: TextAlign.center,
+              ),
+            );
+          },
         );
-      },
-    );
+      }
+    });
+
+    final todoListState = ref.watch(todoListProvider);
+
+    switch (todoListState.status) {
+      case TodoListStatus.initial:
+        return const SizedBox.shrink();
+      case TodoListStatus.loading:
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      case TodoListStatus.failure:
+      case TodoListStatus.success:
+        final filteredTodos = ref.watch(filteredTodosProvider);
+        return ListView.separated(
+          itemCount: filteredTodos.length,
+          separatorBuilder: (BuildContext context, int index) {
+            return const Divider(color: Colors.grey);
+          },
+          itemBuilder: (BuildContext context, int index) {
+            final todo = filteredTodos[index];
+            return ProviderScope(
+              overrides: [
+                todoItemProvider.overrideWithValue(todo),
+              ],
+              child: const TodoItem(),
+            );
+          },
+        );
+    }
   }
 }

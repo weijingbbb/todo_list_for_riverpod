@@ -5,10 +5,10 @@ import 'package:todo_list_for_riverpod/pages/providers/todo_filter/todo_filter_p
 import 'package:todo_list_for_riverpod/pages/providers/todo_list/todo_list_provider.dart';
 import 'package:todo_list_for_riverpod/pages/providers/todo_search/todo_search_provider.dart';
 
-part 'filterred_todos_provider.g.dart';
+part 'filtered_todos_provider.g.dart';
 
 @riverpod
-List<Todo> filterredTodos(Ref ref) {
+List<Todo> filteredTodos(Ref ref) {
   final todoListState = ref.watch(todoListProvider);
   final filter = ref.watch(todoFilterProvider);
   final search = ref.watch(todoSearchProvider);
