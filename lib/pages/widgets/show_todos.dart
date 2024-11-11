@@ -24,6 +24,7 @@ class _ShowTodosState extends ConsumerState<ShowTodos> {
 
   @override
   Widget build(BuildContext context) {
+    Widget prevTodosWidget = const SizedBox.shrink();
     ref.listen<TodoListState>(todoListProvider, (previous, next) {
       if (next.status == TodoListStatus.failure) {
         showDialog(
@@ -53,10 +54,32 @@ class _ShowTodosState extends ConsumerState<ShowTodos> {
         return const Center(
           child: CircularProgressIndicator(),
         );
+      case TodoListStatus.failure when prevTodosWidget is SizedBox:
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                todoListState.error,
+                style: const TextStyle(fontSize: 20),
+              ),
+              const SizedBox(height: 20),
+              OutlinedButton(
+                onPressed: () {
+                  ref.read(todoListProvider.notifier).getTodos();
+                },
+                child: const Text(
+                  '请重试',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ],
+          ),
+        );
       case TodoListStatus.failure:
       case TodoListStatus.success:
         final filteredTodos = ref.watch(filteredTodosProvider);
-        return ListView.separated(
+        prevTodosWidget = ListView.separated(
           itemCount: filteredTodos.length,
           separatorBuilder: (BuildContext context, int index) {
             return const Divider(color: Colors.grey);
@@ -71,6 +94,7 @@ class _ShowTodosState extends ConsumerState<ShowTodos> {
             );
           },
         );
+        return prevTodosWidget;
     }
   }
 }

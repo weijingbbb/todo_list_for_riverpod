@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_list_for_riverpod/pages/providers/active_todo_count/active_todo_count_provider.dart';
 import 'package:todo_list_for_riverpod/pages/providers/theme/theme_provider.dart';
 import 'package:todo_list_for_riverpod/pages/providers/todo_list/todo_list_provider.dart';
+import 'package:todo_list_for_riverpod/pages/providers/todo_list/todo_list_state.dart';
 
 class TodoHeader extends ConsumerWidget {
   const TodoHeader({super.key});
@@ -34,15 +35,19 @@ class TodoHeader extends ConsumerWidget {
         Row(
           children: [
             IconButton(
-              onPressed: () {
-                ref.read(themeProvider.notifier).toggleTheme();
-              },
+              onPressed: todoListState.status == TodoListStatus.loading
+                  ? null
+                  : () {
+                      ref.read(themeProvider.notifier).toggleTheme();
+                    },
               icon: const Icon(Icons.light_mode),
             ),
             IconButton(
-              onPressed: () {
-                ref.read(todoListProvider.notifier).getTodos();
-              },
+              onPressed: todoListState.status == TodoListStatus.loading
+                  ? null
+                  : () {
+                      ref.read(todoListProvider.notifier).getTodos();
+                    },
               icon: const Icon(Icons.refresh),
             ),
           ],
