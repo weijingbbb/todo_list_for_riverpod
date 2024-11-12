@@ -14,16 +14,26 @@ class _NewTodoState extends ConsumerState<NewTodo> {
   final _controller = TextEditingController();
   Widget prevWidget = const SizedBox.shrink();
 
-  bool enableOrNot(TodoListStatus status) {
-    switch (status) {
-      case TodoListStatus.failure when prevWidget is SizedBox:
-      case TodoListStatus.loading || TodoListStatus.initial:
-        return false;
+  bool enableOrNot(TodoListState state) {
+    switch (state) {
+      case TodoListStateFailure(error: _) when prevWidget is SizedBox:
+      case TodoListStateLoading() || TodoListStateInitial():
       case _:
         prevWidget = Container();
         return true;
     }
   }
+
+  // bool enableOrNot(TodoListStatus status) {
+  //   switch (status) {
+  //     case TodoListStatus.failure when prevWidget is SizedBox:
+  //     case TodoListStatus.loading || TodoListStatus.initial:
+  //       return false;
+  //     case _:
+  //       prevWidget = Container();
+  //       return true;
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -37,7 +47,8 @@ class _NewTodoState extends ConsumerState<NewTodo> {
     return TextField(
       controller: _controller,
       decoration: const InputDecoration(labelText: '添加新的TODO'),
-      enabled: enableOrNot(todoListState.status),
+      // enabled: enableOrNot(todoListState.status),
+      enabled: enableOrNot(todoListState),
       onSubmitted: (String? desc) {
         if (desc != null && desc.trim().isNotEmpty) {
           ref.read(todoListProvider.notifier).addTodo(desc);
