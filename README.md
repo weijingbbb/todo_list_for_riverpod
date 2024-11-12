@@ -1,16 +1,22 @@
-# todo_list_for_riverpod
+# 项目介绍
+这个是udemy上的课程：https://www.udemy.com/course/flutter-riverpod-essential-course-english
 
-A new Flutter project.
+第12节的 Todo App 项目
 
-## Getting Started
+这个项目主要是使用了riverpod来管理状态，使用了Hive来存储数据
 
-This project is a starting point for a Flutter application.
+项目是递进式的，每个分支都是一个递进的技术
 
-A few resources to get you started if this is your first Flutter project:
+递进的顺序是：
+- main 最基础的状态管理
+- for_enum 使用枚举对状态进行管理
+- for_sealed 使用密封类替代枚举管理状态
+- for_asyncvalue 使用异步状态管理
+- for_hive 使用Hive对状态数据进行存储
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+基本上 for_asyncvalue 是最终的版本，for_hive主要是增加了存储功能。
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# 运行
+`flutter pub get` 安装依赖
+
+`flutter run` 即可运行
