@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:todo_list_for_riverpod/pages/providers/theme/theme_provider.dart';
 import 'package:todo_list_for_riverpod/pages/providers/theme/theme_state.dart';
-import 'package:todo_list_for_riverpod/repositories/fake_repository_provider.dart';
+import 'package:todo_list_for_riverpod/repositories/hive_todos_repository.dart';
 import 'package:todo_list_for_riverpod/repositories/providers/todos_repository_provider.dart';
 
 import 'pages/todos_page.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  await Hive.openBox('todos');
+
   runApp(
     ProviderScope(
       overrides: [
         // 这里对请求方法重写，应该是这样可以在请求类里使用ref
-        todosRepositoryProvider.overrideWithValue(FakeRepositoryProvider()),
+        todosRepositoryProvider.overrideWithValue(HiveTodosRepository()),
       ],
       child: const MyApp(),
     ),
