@@ -34,12 +34,22 @@ class _TodoHeaderState extends ConsumerState<TodoHeader> {
   Widget build(BuildContext context) {
     final todoListState = ref.watch(todoListProvider);
 
-    switch (todoListState) {
-      case TodoListStateLoading():
+    todoListState.maybeWhen(
+      skipLoadingOnRefresh: false,
+      loading: () {
         context.loaderOverlay.show();
-      case _:
+      },
+      orElse: () {
         context.loaderOverlay.hide();
-    }
+      },
+    );
+
+    // switch (todoListState) {
+    //   case TodoListStateLoading():
+    //     context.loaderOverlay.show();
+    //   case _:
+    //     context.loaderOverlay.hide();
+    // }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,11 +61,15 @@ class _TodoHeaderState extends ConsumerState<TodoHeader> {
               style: TextStyle(fontSize: 36.0),
             ),
             const SizedBox(width: 10),
-            switch (todoListState) {
-              TodoListStateSuccess(todos: var todos) =>
-                getActiveTodoCount(todos),
-              _ => prevTodoCountWidget,
-            },
+            todoListState.maybeWhen(
+              data: (List<Todo> todos) => getActiveTodoCount(todos),
+              orElse: () => prevTodoCountWidget,
+            ),
+            // switch (todoListState) {
+            //   TodoListStateSuccess(todos: var todos) =>
+            //     getActiveTodoCount(todos),
+            //   _ => prevTodoCountWidget,
+            // },
           ],
         ),
         Row(
@@ -73,7 +87,8 @@ class _TodoHeaderState extends ConsumerState<TodoHeader> {
             ),
             IconButton(
               onPressed: () {
-                ref.read(todoListProvider.notifier).getTodos();
+                ref.invalidate(todoListProvider);
+                // ref.read(todoListProvider.notifier).getTodos();
               },
               // onPressed: todoListState.status == TodoListStatus.loading
               //     ? null

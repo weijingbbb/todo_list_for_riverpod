@@ -10,7 +10,7 @@ class TodoItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final todo = ref.watch(todoItemProvider);
-    print(todo);
+    print('TodoItem---------$todo');
 
     return ListTile(
       title: Text(todo.desc),
